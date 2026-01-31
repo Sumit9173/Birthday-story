@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Story ❤️</title>
+
+<style>
+body {
+    margin: 0;
+    background: #000;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+}
+
+.story-wrapper {
+    max-width: 420px;
+    height: 100vh;
+    margin: auto;
+    position: relative;
+    background: #000;
+}
+
+.story {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 25px;
+    color: #fff;
+    background: linear-gradient(135deg, #ff5f6d, #ffc371);
+    animation: fade 0.8s ease;
+}
+
+.story.active {
+    display: flex;
+}
+
+.story img {
+    width: 220px;
+    max-width: 80%;
+    margin-bottom: 18px;
+    animation: float 3s ease-in-out infinite;
+}
+
+h1 {
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+#typing {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #ffe6ea;
+    letter-spacing: 1px;
+}
+
+.progress {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+}
+
+/* Hearts */
+.heart {
+    position: fixed;
+    font-size: 20px;
+    animation: floatUp 5s linear;
+}
+
+@keyframes floatUp {
+    from { bottom: 0; opacity: 1; }
+    to { bottom: 100%; opacity: 0; }
+}
+
+/* Animations */
+@keyframes fade {
+    from { opacity: 0; transform: scale(1.05); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="story-wrapper" id="wrapper">
+    <div class="progress"><div class="progress-bar" id="bar"></div></div>
+
+    <div class="story active">
+        <img src="img1.webp">
+        <h1>🎂 Happy Birthday</h1>
+        <p>Doraemon 💙</p>
+    </div>
+
+    <div class="story">
+        <img src="img2.gif">
+        <h1>🥹 My Love</h1>
+        <p>Tum meri life ka sabse cute surprise ho ❤️</p>
+    </div>
+
+    <div class="story">
+        <img src="img3.gif">
+        <h1>✨ Special You</h1>
+        <p>Tumhari smile meri duniya roshan kar deti hai 💫</p>
+    </div>
+
+    <div class="story">
+        <img src="img4.gif">
+        <h1>💞 Promise</h1>
+        <p>Main hamesha tumhare saath rahunga 🤞</p>
+    </div>
+
+    <!-- LAST STORY -->
+    <div class="story">
+        <img src="img5.gif">
+        <h1>💙 I Love You</h1>
+        <p>Aaj, kal aur hamesha 😘</p>
+        <div id="typing"></div>
+    </div>
+</div>
+
+<audio autoplay loop>
+  <source src="song.mpeg" type="audio/mpeg">
+</audio>
+
+<script>
+const stories = document.querySelectorAll('.story');
+const bar = document.getElementById('bar');
+const typingBox = document.getElementById('typing');
+const wrapper = document.getElementById('wrapper');
+
+let index = 0;
+let duration = 4000;
+let timer;
+let paused = false;
+
+// Show story
+function showStory(i) {
+    stories.forEach(s => s.classList.remove('active'));
+    stories[i].classList.add('active');
+
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+
+    setTimeout(() => {
+        bar.style.transition = `width ${duration}ms linear`;
+        bar.style.width = '100%';
+    }, 50);
+
+    // LAST STORY effects
+    if (i === stories.length - 1) {
+        heartBlast();
+        typeText("I Love You ❤️");
+    }
+}
+
+function nextStory() {
+    if (index < stories.length - 1) {
+        index++;
+        showStory(index);
+    } else {
+        clearInterval(timer);
+    }
+}
+
+function startTimer() {
+    timer = setInterval(nextStory, duration);
+}
+
+function pauseStory() {
+    if (paused) return;
+    paused = true;
+    clearInterval(timer);
+    bar.style.transition = 'none';
+}
+
+function resumeStory() {
+    if (!paused) return;
+    paused = false;
+    startTimer();
+}
+
+// Hold to pause (Instagram style)
+wrapper.addEventListener('mousedown', pauseStory);
+wrapper.addEventListener('mouseup', resumeStory);
+wrapper.addEventListener('touchstart', pauseStory);
+wrapper.addEventListener('touchend', resumeStory);
+
+// Hearts
+function heartBlast() {
+    for (let i = 0; i < 40; i++) {
+        let h = document.createElement('div');
+        h.className = 'heart';
+        h.innerHTML = '❤️';
+        h.style.left = Math.random() * 100 + 'vw';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 5000);
+    }
+}
+
+// Typing effect
+function typeText(text) {
+    typingBox.innerHTML = '';
+    let i = 0;
+    let t = setInterval(() => {
+        typingBox.innerHTML += text[i];
+        i++;
+        if (i >= text.length) clearInterval(t);
+    }, 120);
+}
+
+// Start
+showStory(index);
+startTimer();
+</script>
+
+</body>
+</html>
